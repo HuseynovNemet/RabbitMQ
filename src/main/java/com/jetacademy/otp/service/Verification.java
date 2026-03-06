@@ -3,6 +3,7 @@ package com.jetacademy.otp.service;
 import com.jetacademy.otp.dao.entity.OtpEntity;
 import com.jetacademy.otp.dao.repository.OtpRepository;
 import com.jetacademy.otp.dto.VerifyRequest;
+import com.jetacademy.otp.util.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ public class Verification {
         OtpEntity entity = otpRepository.findByPhoneNumber(dto.getPhoneNumber())
                 .orElseThrow(() -> new RuntimeException("Kod kecersizdir"));
 
-        if (entity.getOtpCode().equals(dto.getOtpCode())) {
+        if (!entity.getStatus().equals(Status.BLOCK)&& entity.getSmsCount()<5 && entity.getOtpCode().equals(dto.getOtpCode())) {
             // Təsdiqlə...
             return "Uğurlu!";
         }
